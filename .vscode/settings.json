@@ -1,0 +1,7 @@
+{
+  "editor.tabSize": 3,
+  "editor.insertSpaces": true,
+  "C_Cpp.clang_format_fallbackStyle": "none",
+  "C_Cpp.default.cStandard": "c99",
+  "editor.formatOnSave": true
+}

@@ -9,8 +9,8 @@
  *
  * Each "trial" allocates three 5000x5000 U32 matrices: A, B, and C. A and B
  * are filled with random data, while C is initially zeroed out. Then, the
- * multiplication C = A * B will be performed using an assigned loop order and
- * the time it takes to do this calculation will be measured and displayed.
+ * multiplication C = A * B is performed using an assigned loop order and
+ * the time it takes to do this calculation is measured and displayed.
  *
  * A "run" consists of a single trial for each loop ordering.
  *
@@ -19,7 +19,6 @@
  * be compared and analyzed.
  */
 
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -182,7 +181,7 @@ int main(void)
 {
    Results_t runResults[NumberOfRuns];
 
-   printf("# Experimental Data:\n");
+   printf("# Experimental Data:");
 
    for(uint8_t i = 0; i < NumberOfRuns; i++)
    {

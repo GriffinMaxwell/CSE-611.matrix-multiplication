@@ -14,7 +14,7 @@
  *
  * A "run" consists of a single trial for each loop ordering.
  *
- * The "full experiment" consists of 5 runs. The resulting 5 time measurements
+ * The "full experiment" consists of 3 runs. The resulting 3 time measurements
  * for each loop ordering are averaged and displayed. Then these averages can
  * be compared and analyzed.
  */
@@ -28,8 +28,8 @@
 
 enum
 {
-   N = 500,
-   NumberOfRuns = 5
+   N = 5000,
+   NumberOfRuns = 3
 };
 
 typedef struct
@@ -184,9 +184,9 @@ int main(void)
 
    printf("# Experimental Data:\n");
 
-   for(uint8_t i = 1; i <= NumberOfRuns; i++)
+   for(uint8_t i = 0; i < NumberOfRuns; i++)
    {
-      printf("\n## Run %d:\n", i);
+      printf("\n## Run %d:\n", i + 1);
       PerformRunOfTrials(&runResults[i]);
    }
 

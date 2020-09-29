@@ -28,9 +28,19 @@
 
 enum
 {
-   N = 500, // Matrix dimension
+   N = 500,
    NumberOfRuns = 5
 };
+
+typedef struct
+{
+   double ijk;
+   double ikj;
+   double jik;
+   double jki;
+   double kij;
+   double kji;
+} Results_t;
 
 //! Function type for performing the matrix multiplication C = A * B in a particular loop order
 typedef void (*MatrixMultiplication_t)(int32_t *A, int32_t *B, int32_t *C);
@@ -119,7 +129,7 @@ static void kji(int32_t *A, int32_t *B, int32_t *C)
    }
 }
 
-static void PeformTrial(MatrixMultiplication_t multiply, clock_t *timeElapsedUsec)
+static void PeformTrial(MatrixMultiplication_t multiply, double *results)
 {
    size_t MatrixNumBytes = N * N * sizeof(int32_t);
 
@@ -138,46 +148,75 @@ static void PeformTrial(MatrixMultiplication_t multiply, clock_t *timeElapsedUse
    multiply(A, B, C);
    after = clock();
 
-   *timeElapsedUsec = after - before;
+   *results = ((double)after - before) / 1000000.;
 
-   printf(" %lu usec\n", *timeElapsedUsec);
+   printf(" %f seconds\n", *results);
 
    free(A);
    free(B);
    free(C);
 }
 
-static void PerformRunOfTrials(void)
+static void PerformRunOfTrials(Results_t *results)
 {
-   clock_t timeElapsedUsec;
-
    printf("- Trial ijk:");
-   PeformTrial(ijk, &timeElapsedUsec);
+   PeformTrial(ijk, &results->ijk);
 
    printf("- Trial ikj:");
-   PeformTrial(ikj, &timeElapsedUsec);
+   PeformTrial(ikj, &results->ikj);
 
    printf("- Trial jik:");
-   PeformTrial(jik, &timeElapsedUsec);
+   PeformTrial(jik, &results->jik);
 
    printf("- Trial jki:");
-   PeformTrial(jki, &timeElapsedUsec);
+   PeformTrial(jki, &results->jki);
 
    printf("- Trial kij:");
-   PeformTrial(kij, &timeElapsedUsec);
+   PeformTrial(kij, &results->kij);
 
    printf("- Trial kji:");
-   PeformTrial(kji, &timeElapsedUsec);
+   PeformTrial(kji, &results->kji);
 }
 
 int main(void)
 {
+   Results_t runResults[NumberOfRuns];
+
    printf("# Experimental Data:\n");
+
+   for(uint8_t i = 1; i <= NumberOfRuns; i++)
+   {
+      printf("\n## Run %d:\n", i);
+      PerformRunOfTrials(&runResults[i]);
+   }
+
+   printf("\n# Results\n");
+
+   Results_t averages = { 0 };
 
    for(uint8_t i = 0; i < NumberOfRuns; i++)
    {
-      printf("\n## Run %d:\n", i);
-      PerformRunOfTrials();
+      averages.ijk += runResults[i].ijk;
+      averages.ikj += runResults[i].ikj;
+      averages.jik += runResults[i].jik;
+      averages.jki += runResults[i].jki;
+      averages.kij += runResults[i].kij;
+      averages.kji += runResults[i].kji;
    }
+
+   averages.ijk /= NumberOfRuns;
+   averages.ikj /= NumberOfRuns;
+   averages.jik /= NumberOfRuns;
+   averages.jki /= NumberOfRuns;
+   averages.kij /= NumberOfRuns;
+   averages.kji /= NumberOfRuns;
+
+   printf("- Average time for ijk: %f seconds\n", averages.ijk);
+   printf("- Average time for ikj: %f seconds\n", averages.ikj);
+   printf("- Average time for jik: %f seconds\n", averages.jik);
+   printf("- Average time for jki: %f seconds\n", averages.jki);
+   printf("- Average time for kij: %f seconds\n", averages.kij);
+   printf("- Average time for kji: %f seconds\n", averages.kji);
+
    return 0;
 }
